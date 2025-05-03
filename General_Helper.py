@@ -15,8 +15,8 @@ from datetime import datetime
 
 def Generate_System_Actions_Data_Json(actionData):
         return {
-                "ActionID": actionData[0],
-                "ActionName": actionData[1]
+                "ActionID": actionData[1],
+                "ActionName": actionData[0]
                 }
 
 def Generate_Action_Mapping_Data_Json(actionMappingData):
