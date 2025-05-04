@@ -56,6 +56,7 @@ def Generate_Patient_Data_Json(patientID, patientData):
                 }#form json patient record object from a list of data
 
 def Generate_Visit_Data_Json(patientID, visitData):
+        print(visitData)
         return {
                     "Patient_ID": patientID,
                     "Visit_ID": visitData[0],

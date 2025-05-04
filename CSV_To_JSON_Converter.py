@@ -123,7 +123,7 @@ def Create_Patient_Json_Data(jsonObjects, listOfRecordElements):
         if (checkObjectForValue(visitIds, element[1]) == False): #check visitIds for visitId if it doesnt exist create a new visit record
             visitIds.append(element[1])#add visitId to list to stop duplicates
         
-            visitData = [element[0], element[1], element[2], element[3], element[8]]#create list of visit data
+            visitData = [element[1], element[2], element[3], element[8]]#create list of visit data
             newPatientVisitRecord = General_Helper.Generate_Visit_Data_Json(element[0], visitData)
         
             jsonObjects[2].append(newPatientVisitRecord)#add new record to PatientVisitRecord json object

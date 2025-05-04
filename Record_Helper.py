@@ -44,7 +44,7 @@ def Remove_Additional_Information_Note_Data(searchValue, jsonObject, jsonElement
     return jsonObject
     
 def Get_Patient_Record(searchValue, filePath, jsonElementName, overRide = False):
-    fileData = File_Helper.Read_Json_File(filePath)
+    fileData = File_Helper.Read_Json_Patient_File(filePath)
 
     searchedPatientRecords = []
 
@@ -55,7 +55,7 @@ def Get_Patient_Record(searchValue, filePath, jsonElementName, overRide = False)
     return searchedPatientRecords
 
 def Get_Patient_Visit_Records(searchValue, filePath, jsonElementName, overRide = False):
-    fileData = File_Helper.Read_Json_File(filePath)
+    fileData = File_Helper.Read_Json_Patient_File(filePath)
     
     patientVisitRecords = []
     
@@ -66,7 +66,7 @@ def Get_Patient_Visit_Records(searchValue, filePath, jsonElementName, overRide =
     return patientVisitRecords
         
 def Get_Patient_Visit_Notes(searchValue, filePath, jsonElementName, overRide = False):
-    fileData = File_Helper.Read_Json_File(filePath)
+    fileData = File_Helper.Read_Json_Patient_File(filePath)
     
     patientVisitNotes = []
     
