@@ -27,7 +27,6 @@ def Get_Json_Patient_Data(filePath):
     return File_Helper.Read_Json_Patient_File(filePath)
 
 def Get_Json_Credential_Data(filePath):
-    print(filePath[1])
     return File_Helper.Read_Json_Credential_File(filePath) #get json from file
 
 def Create_User_Role_Json_Data(jsonObjects, listOfRecordElements):
@@ -50,7 +49,6 @@ def Create_User_Role_Json_Data(jsonObjects, listOfRecordElements):
 
 def Create_User_Json_Data(jsonObjects, listOfRecordElements):
     usernames = []
-
     for element in listOfRecordElements:
         if (len(element)== 1): 
             break
@@ -97,9 +95,10 @@ def Create_Patient_Note_Json_Data(jsonObjects, listOfRecordElements):
         if (checkObjectForValue(noteIds, element[3]) == False):
             noteIds.append(element[3])
 
-            patientNoteData = [element[1], element[2], element[3], element[4]]
+            patientNoteData = [element[3], element[4]]
+            visitData = [None, element[2]]
 
-            jsonObjects[4].append(General_Helper.Generate_Patient_Note_Data_Json(patientNoteData))
+            jsonObjects[4].append(General_Helper.Generate_Additional_Information_Note_Data_Json(element[1], visitData, patientNoteData))
 
     return jsonObjects
                         
@@ -123,14 +122,14 @@ def Create_Patient_Json_Data(jsonObjects, listOfRecordElements):
         if (checkObjectForValue(visitIds, element[1]) == False): #check visitIds for visitId if it doesnt exist create a new visit record
             visitIds.append(element[1])#add visitId to list to stop duplicates
         
-            visitData = [element[1], element[2], element[3], element[8]]#create list of visit data
+            visitData = [None, element[1], element[2], element[3], element[8]]#create list of visit data
             newPatientVisitRecord = General_Helper.Generate_Visit_Data_Json(element[0], visitData)
         
             jsonObjects[2].append(newPatientVisitRecord)#add new record to PatientVisitRecord json object
 
         if (checkObjectForValue(visitNoteIds, element[11]) == False): #check visitNoteIds for visitNoteId if it doesnt exist create a new note record
             visitNoteIds.append(element[11])#add NoteId to list to stop duplicates
-            noteData = [element[10], element[11], element[12]]#create list of note data
+            noteData = [element[11], element[10], element[12]]#create list of note data
             newPatientVisitNote = General_Helper.Generate_Note_Data_Json(element[0], noteData, visitData)
             
             jsonObjects[3].append(newPatientVisitNote)#add new record to PatientVisitNotes json object
@@ -181,17 +180,15 @@ def Convert_Patient_Data(csvFilePaths, filePath):
     
         except Exception as e:
             override = True
-            print(e)
-            print("Unable to load file: "+csvFilePath)
             return False
 
     Append_Json_Patient_Objects(patientData, filePath)
+    return True
 
 def Convert_User_Credential_Data(csvFilePath, filePath):
     
     credentialData = []
     listOfRecordElements = []
-    
     try:
         with open(csvFilePath, mode='r', newline='', encoding='utf-8', errors='replace') as fileData:
             records = csv.reader(fileData)
@@ -202,21 +199,25 @@ def Convert_User_Credential_Data(csvFilePath, filePath):
                         #elements = record.split(",")
                     listOfRecordElements.append(record)
                 else: firstLine = False
-                
             credentialData.append(listOfRecordElements)
 
     except Exception as e:
         override = True
-        print(e)
-        print("Unable to load file: "+csvFilePath)
         return False
     
     Append_Json_Credential_Objects(credentialData, filePath)
-    
-def Convert_CSV_To_JSON(csvFilePaths, filePaths):
-    override = False
+    return True
 
-    csvsFileData = []
-    print(filePaths[0])
-    Convert_User_Credential_Data(csvFilePaths[2], filePaths[0])
-    Convert_Patient_Data(csvFilePaths[0:2], filePaths[1])
+def Create_PRSUsageStatistics(jsonFile):
+    usageStatisicsTemplate = File_Helper.Generate_Json_Usage_Statistics_Template()
+    File_Helper.Write_Json_File(jsonFile, usageStatisicsTemplate)
+
+def Convert_CSV_To_JSON(csvFilePaths, jsonFilePaths):
+    filesExist = File_Helper.Check_For_CSV_File(csvFilePaths)
+    if(filesExist == True):
+        Convert_User_Credential_Data(csvFilePaths[2], jsonFilePaths[0])
+        Convert_Patient_Data(csvFilePaths[0:2], jsonFilePaths[1])
+        Create_PRSUsageStatistics(jsonFilePaths[2])
+        return True
+    else:
+        return False

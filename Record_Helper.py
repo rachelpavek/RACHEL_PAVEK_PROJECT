@@ -73,8 +73,17 @@ def Get_Patient_Visit_Notes(searchValue, filePath, jsonElementName, overRide = F
     for patientVisitNote in fileData[3]:#loop through PatientVisitNotes json object for each note record
         if(patientVisitNote[jsonElementName]== searchValue or overRide == True): #generic if statement that searches by element for search value
             patientVisitNotes.append(patientVisitNote)
-
     return patientVisitNotes
+
+def Get_Additional_Visit_Notes(searchValue, filePath, jsonElementName, overRide = False):
+    fileData = File_Helper.Read_Json_Patient_File(filePath)
+    
+    additionalVisitNotes = []
+    
+    for additionalVisitNote in fileData[4]:#loop through PatientVisitNotes json object for each note record
+        if(additionalVisitNote[jsonElementName]== searchValue or overRide == True): #generic if statement that searches by element for search value
+            additionalVisitNotes.append(additionalVisitNote)
+    return additionalVisitNotes
 
 def Get_User_Record(searchValue, secondarySearchValue, filePath, jsonElementName, secondaryJsonElementName):
     fileData = File_Helper.Read_Json_Credential_File(filePath)
@@ -88,14 +97,13 @@ def Get_User_Record(searchValue, secondarySearchValue, filePath, jsonElementName
     return userRecords
 
 def Get_User_Role(searchValue, filePath, jsonElementName):
-    fileData = File_Helper.Read_Json_File(filePath)
+    fileData = File_Helper.Read_Json_Credential_File(filePath)
 
     userRoles = []
 
-    for userRole in fileData[6]:
+    for userRole in fileData[2]:
         if (userRole[jsonElementName]== searchValue):
             userRoles.append(userRole)
-
     return userRoles
 
 def Get_Action_Mapping(searchValue, filePath, jsonElementName):
@@ -119,6 +127,17 @@ def Get_Action(searchValue, filePath, jsonElementName):
             userActions.append(userAction)
 
     return userActions[0]
+
+def Get_Login_Event(searchValue, filePath, jsonElementName):
+    fileData = File_Helper.Read_Json_Usage_Statistic_File(filePath)
+
+    loginEvents = []
+
+    for loginEvent in fileData[1]:
+        if(loginEvent[jsonElementName]== searchValue):
+            loginEvents.append(loginEvent)
+
+    return loginEvents
 
 
 

@@ -1,7 +1,8 @@
 import tkinter
 import Back_End_Helper
+from tkinter import messagebox
 
-loginData = {"username": None, "roleId": False}
+loginData = {"UserID": None, "roleId": False}
 
 def Login_Window():
     global loginData
@@ -11,15 +12,26 @@ def Login_Window():
     window.configure(bg='#FFD1DC')
     window.resizable(False,False)
 
+
     def Validate_Credentials():
         global loginData
+        def show_error():
+            messagebox.showerror("Error", "Incorrect Username or Password. Please Try Again")
         backEndClass = Back_End_Helper.Validate_Credentials(username_entry.get(), password_entry.get())
-        roleID = backEndClass.Execute_Command()
-        if (roleID != False):
-            loginData["username"] = username_entry.get()
-            loginData["roleId"] = roleID
-
+        userData = backEndClass.Execute_Command()
+        
+        backEndClass = Back_End_Helper.Log_Usage_Record()
+        if (userData != False):
+            loginData["UserID"] = userData["UserID"]
+            loginData["roleId"] = userData["Role_ID"]
+            backEndClass.Create_Login_Event(userData["UserID"], username_entry.get(), userData["Role_ID"], True)
             window.destroy()
+        else:
+            backEndClass.Create_Login_Event(None, username_entry.get(), None, False)
+            show_error()
+            username_entry.delete(0, tkinter.END)
+            password_entry.delete(0, tkinter.END)
+
         
     #Creating widgets
     login_label = tkinter.Label(window, text="Login", bg='#FFD1DC', font=('Roboto', 30))
